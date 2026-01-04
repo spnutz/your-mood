@@ -15,7 +15,6 @@ export const MoodLogger = () => {
   const [alreadyLogged, setAlreadyLogged] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [moodId, setMoodId] = useState<string | null>(null);
-  const [message, setMessage] = useState('');
   const [originalMood, setOriginalMood] = useState<MoodLevel | null>(null);
   const [originalNote, setOriginalNote] = useState('');
 
@@ -33,7 +32,6 @@ export const MoodLogger = () => {
         // Store original values
         setOriginalMood(mood.moodLevel);
         setOriginalNote(mood.note || '');
-        setMessage(`You already logged your mood today: Level ${mood.moodLevel}`);
       }
     }
     checkTodayMood();
@@ -50,11 +48,8 @@ export const MoodLogger = () => {
 
     try {
       setLoading(true);
-      setMessage('');
-
       if (isEditing && moodId) {
         await updateMood(moodId, selectedMood, note);
-        setMessage('Mood updated successfully! ✨');
         setIsEditing(false);
         // Update original values on successful update
         setOriginalMood(selectedMood);
@@ -62,14 +57,15 @@ export const MoodLogger = () => {
       } else {
         const newId = await addMood(user.uid, selectedMood, note);
         setMoodId(newId);
-        setMessage('Mood logged successfully! ✨');
         setOriginalMood(selectedMood);
         setOriginalNote(note);
       }
 
       setAlreadyLogged(true);
     } catch (error) {
-      setMessage((error as Error).message);
+      console.error(error);
+      // Optional: Handle error visibility via another method or alert
+      // alert((error as Error).message); 
     } finally {
       setLoading(false);
     }
@@ -282,15 +278,7 @@ export const MoodLogger = () => {
           </div>
         )}
 
-        {/* {message && (
-          <p style={{
-            marginTop: '1rem',
-            color: message.includes('success') ? 'green' : 'red',
-            textAlign: 'center'
-          }}>
-            {message}
-          </p>
-        )} */}
+
       </main>
     </div>
   )
