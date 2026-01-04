@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import type { Mood, MoodData, MoodLevel } from "../types";
 import { db } from "../config/firebase";
 
@@ -20,6 +20,14 @@ export const addMood = async (userId: string, moodLevel: MoodLevel, note?: strin
 
   const docRef = await addDoc(collection(db, 'moods'), moodData);
   return docRef.id
+}
+
+export const updateMood = async (docId: string, moodLevel: MoodLevel, note?: string): Promise<void> => {
+  const moodRef = doc(db, 'moods', docId);
+  await updateDoc(moodRef, {
+    moodLevel,
+    note
+  });
 }
 
 export const getMoodByDate = async (userId: string, date: string): Promise<Mood | null> => {
