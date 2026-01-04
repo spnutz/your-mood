@@ -1,67 +1,69 @@
-import type { Mood } from '../types';
+import { type Mood } from '../types';
 import { moodOptions } from '../config/moodOptions';
+import './MoodCard.css';
 
-interface Props {
+interface MoodCardProps {
   date: Date;
   mood?: Mood | null;
+  size?: 'mini' | 'normal';
+  showDayName?: boolean;
 }
 
-export const MoodCard = ({ date, mood }: Props) => {
+export const MoodCard = ({ date, mood, size = 'normal', showDayName = true }: MoodCardProps) => {
   const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
   const dayNumber = date.getDate();
   const isToday = date.toDateString() === new Date().toDateString();
 
   const moodOption = mood ? moodOptions.find(m => m.level === mood.moodLevel) : null;
+  const Icon = moodOption?.icon;
+
+  // Inline style for dynamic background color
+  const dynamicStyle = {
+    backgroundColor: mood ? `${moodOption?.color}15` : '#f5f5f5',
+    borderColor: isToday ? '#4CAF50' : (mood ? `${moodOption?.color}30` : '#eee'),
+    borderWidth: isToday ? '2px' : '1px',
+    borderStyle: 'solid'
+  };
 
   return (
-    <div style={{
-      border: isToday ? '2px solid #4CAF50' : '1px solid #ddd',
-      borderRadius: '8px',
-      padding: '1rem',
-      textAlign: 'center',
-      minHeight: '120px',
-      backgroundColor: mood ? `${moodOption?.color}10` : '#777373ff',
-      position: 'relative'
-    }}>
-      <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
-        {dayName}
-      </div>
-      <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
+    <div
+      className={`mood-card-base ${size === 'mini' ? 'mood-card-mini' : 'mood-card-full'}`}
+      style={dynamicStyle}
+    >
+      {showDayName && (
+        <div className="mood-day-name">{dayName}</div>
+      )}
+
+      <div className={`mood-date-number ${size === 'mini' ? 'date-mini' : ''}`}>
         {dayNumber}
       </div>
 
       {mood ? (
-        <>
-          <div style={{
-            fontSize: '2rem',
-            color: moodOption?.color,
-            fontWeight: 'bold',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            {moodOption?.icon
-              ? <moodOption.icon size={32} color={moodOption.color} />
-              : mood.moodLevel
+        <div className="mood-content">
+          <div className="mood-icon-container">
+            {Icon
+              ? <Icon size={size === 'mini' ? 20 : 32} color={moodOption?.color} />
+              : <span style={{ fontSize: size === 'mini' ? '1rem' : '2rem' }}>{mood.moodLevel}</span>
             }
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#666' }}>
-            {moodOption?.label}
-          </div>
-          {mood.note && (
-            <div style={{
-              fontSize: '0.75rem',
-              color: '#999',
-              marginTop: '0.5rem',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}>
-              {mood.note}
-            </div>
+
+          {size === 'normal' && (
+            <>
+              <div className="mood-label" style={{ color: moodOption?.color }}>
+                {moodOption?.label}
+              </div>
+              {mood.note && (
+                <div className="mood-note-snippet">
+                  {mood.note}
+                </div>
+              )}
+            </>
           )}
-        </>
-      ) : null}
+        </div>
+      ) : (
+        // Empty state placeholder if needed, or just nothing
+        null
+      )}
     </div>
   )
 }

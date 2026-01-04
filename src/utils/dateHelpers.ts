@@ -52,14 +52,38 @@ export const getWeekDates = (startDate: Date): Date[] => {
   return dates;
 };
 
-export const getMonthDates = (date: Date): Date[] => {
+export const getCalendarMonthDays = (date: Date): { date: Date; isCurrentMonth: boolean }[] => {
   const year = date.getFullYear();
   const month = date.getMonth();
-  const lastDay = new Date(year, month + 1, 0);
 
-  const dates: Date[] = [];
-  for (let d = 1; d <= lastDay.getDate(); d++) {
-    dates.push(new Date(year, month, d, 12, 0, 0));  // Set to noon to avoid timezone issues
+  // Set to noon (12:00) to avoid timezone issues when converting to ISO string (UTC)
+  const firstDayOfMonth = new Date(year, month, 1, 12, 0, 0, 0);
+
+  // 0 = Sunday, 1 = Monday, ...
+  const startDay = firstDayOfMonth.getDay();
+
+  // Calculate start date (Monday of the first week)
+  // If startDay is 0 (Sunday), we go back 6 days.
+  // If startDay is 1 (Monday), we start on that day (offset 0).
+  // Otherwise we subtract (day - 1).
+  const daysToSubtract = startDay === 0 ? 6 : startDay - 1;
+  const startDate = new Date(firstDayOfMonth);
+  startDate.setDate(startDate.getDate() - daysToSubtract);
+
+  const days: { date: Date; isCurrentMonth: boolean }[] = [];
+
+  // We need 6 weeks to cover all possible months (e.g. 1st is Sunday on a 31 day month)
+  // 6 * 7 = 42 days
+  const current = new Date(startDate);
+
+  // Just generate 42 days to be safe and consistent
+  for (let i = 0; i < 42; i++) {
+    days.push({
+      date: new Date(current),
+      isCurrentMonth: current.getMonth() === month
+    });
+    current.setDate(current.getDate() + 1);
   }
-  return dates;
+
+  return days;
 };

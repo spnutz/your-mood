@@ -1,0 +1,54 @@
+.month-view-container {
+  width: 100%;
+}
+
+.week-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.week-day-label {
+  font-weight: 600;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.calendar-grid-view {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+}
+
+.calendar-day-cell {
+  position: relative;
+  min-height: 80px; /* Ensure enough height for icon */
+  display: flex;
+  flex-direction: column;
+}
+
+.day-other-month {
+  opacity: 0.3;
+  pointer-events: none; /* Optional: disable interaction for other month days */
+  filter: grayscale(100%);
+}
+
+@media (max-width: 768px) {
+  .calendar-grid-view {
+    gap: 2px; /* Very tight gap for mobile */
+  }
+  
+  .week-days-header {
+    gap: 2px;
+  }
+
+  .week-day-label {
+    font-size: 0.65rem; /* Smaller header font */
+  }
+
+  .calendar-day-cell {
+    min-height: 40px; /* Allow smaller cells */
+  }
+}
