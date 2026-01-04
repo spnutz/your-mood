@@ -6,6 +6,15 @@ import { moodOptions } from '../config/moodOptions';
 import { addMood, getMoodByDate, updateMood } from '../services/moodService';
 import { type MoodLevel } from '../types';
 import { Pencil } from 'lucide-react';
+import './MoodLogger.css';
+
+// Helper to convert hex to rgb for CSS variable usage (e.g., "255, 0, 0")
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+    : '0, 0, 0';
+}
 
 export const MoodLogger = () => {
   const { user } = useAuth();
@@ -81,16 +90,12 @@ export const MoodLogger = () => {
   return (
     <div>
       <Header />
-      <main style={{
-        maxWidth: '800px',
-        margin: '0 auto',
-        padding: '2rem'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <main className="mood-logger-container">
+        <div className="mood-header">
           <h1>How are you feeling today?</h1>
         </div>
 
-        <p style={{ color: '#666', marginBottom: '2rem' }}>{today}</p>
+        <p className="date-text">{today}</p>
 
         {(!alreadyLogged || isEditing) ? (
           <>
@@ -101,7 +106,7 @@ export const MoodLogger = () => {
               disabled={alreadyLogged && !isEditing}
             />
 
-            <div style={{ marginTop: '2rem' }}>
+            <div className="note-section">
               <label>Note (optional):</label>
               <textarea
                 value={note}
@@ -109,32 +114,16 @@ export const MoodLogger = () => {
                 disabled={alreadyLogged && !isEditing}
                 placeholder="How was your day?"
                 rows={4}
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  marginTop: '0.5rem',
-                  fontSize: '1rem',
-                  borderRadius: '8px',
-                  border: '1px solid #ddd'
-                }}
+                className="note-textarea"
               />
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+            <div className="button-group">
               <button
                 onClick={handleSubmit}
                 disabled={!selectedMood || loading}
                 type="submit"
-                style={{
-                  padding: '0.75rem 2rem',
-                  fontSize: '1rem',
-                  backgroundColor: '#4CAF50',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: (!selectedMood || loading) ? 'not-allowed' : 'pointer',
-                  flex: 1
-                }}
+                className="btn btn-primary"
               >
                 {loading ? 'Saving...' : (isEditing ? 'Update Mood' : 'Submit')}
               </button>
@@ -143,15 +132,7 @@ export const MoodLogger = () => {
                 <button
                   onClick={handleCancel}
                   disabled={loading}
-                  style={{
-                    padding: '0.75rem 2rem',
-                    fontSize: '1rem',
-                    backgroundColor: '#9e9e9e',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    cursor: 'pointer'
-                  }}
+                  className="btn btn-cancel"
                 >
                   Cancel
                 </button>
@@ -160,70 +141,32 @@ export const MoodLogger = () => {
           </>
         ) : (
           /* Large Summary View */
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginTop: '2rem',
-            animation: 'fadeIn 0.5s ease-in'
-          }}>
+          <div className="summary-container">
             {selectedMood && (() => {
               const option = moodOptions.find(o => o.level === selectedMood);
               if (!option) return null;
 
               const Icon = option.icon;
               return (
-                <div style={{
-                  position: 'relative',
-                  backgroundColor: 'white',
-                  padding: '3rem',
-                  borderRadius: '3rem',
-                  boxShadow: `0 0 60px ${option.color}60, 0 20px 40px rgba(0,0,0,0.1)`, // Neon glow
-                  textAlign: 'center',
-                  marginBottom: '3rem',
-                  border: `4px solid ${option.color}20`,
-                  transition: 'transform 0.3s ease',
-                  cursor: 'default',
-                  minWidth: '280px'
-                }}>
+                <div
+                  className="big-mood-card"
+                  style={{
+                    '--mood-color': option.color,
+                    '--mood-color-rgb': hexToRgb(option.color)
+                  } as React.CSSProperties}
+                >
                   <button
                     onClick={() => setIsEditing(true)}
-                    style={{
-                      position: 'absolute',
-                      top: '1.5rem',
-                      right: '1.5rem',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#ddd',
-                      padding: '0.5rem',
-                      transition: 'color 0.2s',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      zIndex: 10
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#888'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = '#ddd'}
+                    className="edit-btn-absolute"
                     title="Edit Mood"
                   >
                     <Pencil size={24} />
                   </button>
 
-                  <div style={{
-                    transform: 'scale(1.5)',
-                    marginBottom: '1.5rem',
-                    filter: `drop-shadow(0 0 10px ${option.color})` // Icon inner glow
-                  }}>
+                  <div className="mood-icon-wrapper">
                     {Icon && <Icon size={120} color={option.color} strokeWidth={2} />}
                   </div>
-                  <h2 style={{
-                    color: option.color,
-                    margin: 0,
-                    fontSize: '2.5rem',
-                    fontWeight: 800,
-                    textShadow: `0 0 10px ${option.color}40`
-                  }}>
+                  <h2 className="mood-label">
                     {option.label}
                   </h2>
                 </div>
@@ -231,53 +174,17 @@ export const MoodLogger = () => {
             })()}
 
             {note && (
-              <div style={{
-                position: 'relative',
-                backgroundColor: 'white',
-                padding: '2rem',
-                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%', // Cloud-like organic shape
-                boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-                maxWidth: '400px',
-                width: '100%',
-                textAlign: 'center',
-                border: '2px solid #f0f0f0'
-              }}>
-                <p style={{
-                  fontSize: '1.25rem',
-                  color: '#555',
-                  margin: 0,
-                  fontStyle: 'italic',
-                  lineHeight: '1.6'
-                }}>
+              <div className="cloud-note">
+                <p className="cloud-text">
                   "{note}"
                 </p>
                 {/* Little circles for thought bubble effect */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-10px',
-                  left: '50%',
-                  width: '20px',
-                  height: '20px',
-                  backgroundColor: 'white',
-                  borderRadius: '50%',
-                  boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
-                  transform: 'translate(-50%, 0)'
-                }} />
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-25px',
-                  left: '45%',
-                  width: '12px',
-                  height: '12px',
-                  backgroundColor: 'white',
-                  borderRadius: '50%',
-                  boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
-                }} />
+                <div className="cloud-bubble-1" />
+                <div className="cloud-bubble-2" />
               </div>
             )}
           </div>
         )}
-
 
       </main>
     </div>

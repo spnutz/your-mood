@@ -1,0 +1,43 @@
+.mood-selector-grid {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: space-between;
+}
+
+.mood-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  width: 0; /* Ensures buttons can shrink equally if needed */
+}
+
+/* 
+ * NOTE: The border-color and background-color for active/hover states 
+ * largely depend on the specific mood's color (option.color).
+ * Since we are extracting CSS, we can use a dynamic class approach 
+ * if we were using a preprocessor, or keep using CSS variables.
+ * For now, the component passes dynamic colors via style prop 
+ * for the border and background active state. 
+ * We will keep basic structural styles here.
+ */
+
+.mood-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+}
+
+.mood-btn-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #555;
+}

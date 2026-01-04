@@ -6,6 +6,7 @@ import { MonthView } from '../components/MonthView';
 import { getMoodsByDateRange } from '../services/moodService';
 import { getWeekRange, getMonthRange, formatMonthYear, formatShortDate } from '../utils/dateHelpers';
 import type { Mood } from '../types';
+import './MoodHistory.css';
 
 type ViewType = 'week' | 'month';
 
@@ -80,69 +81,43 @@ export const MoodHistory = () => {
   return (
     <div>
       <Header />
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-        <h1>Mood History</h1>
+      <main className="history-container">
+        <h1 className="history-title">Mood History</h1>
 
-        <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
+        <div className="view-controls">
           <button
             onClick={() => setViewType('week')}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: viewType === 'week' ? '#4CAF50' : '#eee',
-              color: viewType === 'week' ? 'white' : 'black',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
+            className={`toggle-btn ${viewType === 'week' ? 'active' : ''}`}
           >
             Week
           </button>
           <button
             onClick={() => setViewType('month')}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: viewType === 'month' ? '#4CAF50' : '#eee',
-              color: viewType === 'month' ? 'white' : 'black',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
+            className={`toggle-btn ${viewType === 'month' ? 'active' : ''}`}
           >
             Month
           </button>
         </div>
 
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '2rem'
-        }}>
-          <button onClick={goToPrevious} style={{ padding: '0.5rem 1rem' }}>
+        <div className="navigation-controls">
+          <button onClick={goToPrevious} className="nav-btn">
             ← Previous
           </button>
 
-          <div style={{ textAlign: 'center' }}>
-            <h2 style={{ margin: 0 }}>{getTitle()}</h2>
-            <button
-              onClick={goToToday}
-              style={{
-                padding: '0.25rem 0.75rem',
-                fontSize: '0.875rem',
-                marginTop: '0.5rem'
-              }}
-            >
+          <div className="current-date-display">
+            <h2 className="current-date-title">{getTitle()}</h2>
+            <button onClick={goToToday} className="today-btn">
               Today
             </button>
           </div>
 
-          <button onClick={goToNext} style={{ padding: '0.5rem 1rem' }}>
+          <button onClick={goToNext} className="nav-btn">
             Next →
           </button>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <div className="loading-state">
             Loading...
           </div>
         ) : (
@@ -162,7 +137,7 @@ export const MoodHistory = () => {
         )}
 
         {!loading && moods.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>
+          <div className="empty-state">
             No mood entries for this period
           </div>
         )}

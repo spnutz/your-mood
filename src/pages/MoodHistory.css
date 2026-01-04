@@ -1,0 +1,88 @@
+.history-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.history-title {
+  /* Inherits h1 global styles but allows potential overrides */
+  margin-top: 0;
+}
+
+.view-controls {
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.toggle-btn {
+  padding: 0.5rem 1rem;
+  background-color: #eee;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.toggle-btn:hover:not(.active) {
+  background-color: #e0e0e0;
+}
+
+.navigation-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.nav-btn {
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nav-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.current-date-display {
+  text-align: center;
+}
+
+.current-date-title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.today-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  cursor: pointer;
+  color: #666;
+}
+
+.today-btn:hover {
+  background-color: #eee;
+  color: #333;
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+}
